@@ -5,8 +5,8 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     [SerializeField] float speed = 3;
-    
-
+    [SerializeField] int health = 5;
+    public bool powerShot;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +26,17 @@ public class Bullet : MonoBehaviour
     {
         if (collision.CompareTag("Enemy")) {
             collision.GetComponent<Enemy>().TakeDamage();
-            Destroy(gameObject);
+
+            if (!powerShot) {
+                Destroy(gameObject);
+            } else {
+                health--;
+            }
+
+            if (health <= 0) {
+                Destroy(gameObject);
+            }
+            
         }
     }
        

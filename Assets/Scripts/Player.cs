@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     bool isLoaded = true;
     [SerializeField] float fireRate = 1f;
     [SerializeField] int health = 5;
+    bool powerShotEnabled;
     
     // Start is called before the first frame update
     void Start()
@@ -46,7 +47,11 @@ public class Player : MonoBehaviour
             float angle = Mathf.Atan2(facingDirection.y, facingDirection.x) * Mathf.Rad2Deg;
             //Create a new quaternion
             Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-            Instantiate(bulletPrefab, transform.position, targetRotation);
+            Transform bulletClone = Instantiate(bulletPrefab, transform.position, targetRotation);
+
+            if (powerShotEnabled) {
+                bulletClone.GetComponent<Bullet>().powerShot = true;
+            }
             StartCoroutine(ReloadGun());
         }
 
@@ -69,6 +74,24 @@ public class Player : MonoBehaviour
         if (health <= 0) {
             health = 0;
             Debug.Log("Game Over");
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("PowerUp")) {
+            switch (collision.GetComponent<PowerUp>().powerUpType) {
+                case PowerUp.PowerUpType.FireRateIncrease:
+                    //incrementar cadencia de tiro
+                    fireRate++;
+                    break;
+                case PowerUp.PowerUpType.PowerShot:
+                    //incrementar la fuerza de tiro
+                    powerShotEnabled = true;
+                    break;
+            }
+
+            Destroy(collision.gameObject, 0.1f);
         }
     }
 }
