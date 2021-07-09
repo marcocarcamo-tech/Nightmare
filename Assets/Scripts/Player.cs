@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     [SerializeField] float fireRate = 1f;
     [SerializeField] int health = 5;
     bool powerShotEnabled;
+    bool isInvulnerable;
+    [SerializeField]int invulnerabilityDelay = 10;
     
     // Start is called before the first frame update
     void Start()
@@ -63,11 +65,29 @@ public class Player : MonoBehaviour
         isLoaded = true;
     }
 
+    IEnumerator VulnerableActivate() {
+        yield return new WaitForSeconds(invulnerabilityDelay);
+        isInvulnerable = false;
+        Debug.Log("Not invulnerable anymore");
+    }
+
+
+
     public void TakeDamage()
     {
-        health--;
-        Debug.Log("Player's health is" + health);
-        Die();
+        if (isInvulnerable == true) {
+            //health = health;
+        } else {
+
+            health--;
+
+            isInvulnerable = true;
+            Debug.Log("You are invulnerable");
+            StartCoroutine(VulnerableActivate());
+            Debug.Log("Player's health is" + health);
+            Die();
+        }
+            
     }
 
     void Die() {
