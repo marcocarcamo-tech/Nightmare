@@ -7,7 +7,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] int health = 1;
     Transform player;
     [SerializeField] float speed = 1f;
-    
+    [SerializeField] int scorePoints = 100;
+
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +32,7 @@ public class Enemy : MonoBehaviour
         health--;
         if (health <= 0) {
             health = 0;
+            GameManager.Instance.Score += scorePoints;
             Destroy(gameObject);
         }
         
